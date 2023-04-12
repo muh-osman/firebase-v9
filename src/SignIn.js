@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+// MUI
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,11 +15,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Alert from '@mui/material/Alert';
-// React Router
-import { Link as RouterLink } from 'react-router-dom';
+import GoogleIcon from '@mui/icons-material/Google';
 // Firebase
 import { auth, googleProvider } from './config/firebase'
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { signInWithEmailAndPassword, signInWithPopup, getAuth, sendPasswordResetEmail } from 'firebase/auth'
 
 
 function Copyright(props) {
@@ -39,9 +39,12 @@ const theme = createTheme();
 
 export default function SignIn() {
 
-  const [alertMsg, setAlertMsg] = useState("")
+  const [alertMsg, setAlertMsg] = useState(null)
+  let alert = <Alert sx={{ mt: 2 }} variant="outlined" severity="error">{`${alertMsg}`}</Alert>
+
   const navigate = useNavigate();
 
+  // Signin With Email Button
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -50,45 +53,52 @@ export default function SignIn() {
     const checkBox = document.getElementById('checkbox').checked //true or false
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
-      
-      const user = auth?.currentUser?.email;
-      console.log(user)
+      var email_signin_btn = document.getElementById('email_signin_btn')
+      email_signin_btn.innerHTML=""
+      email_signin_btn.classList.add('btn_loader')
+
+      await signInWithEmailAndPassword(auth, email, password)
+      const user = auth.currentUser;
       if (user) {
         navigate("/profile");
       }
       
     } catch (error) {
-      setAlertMsg(error)
-      console.log(alertMsg)
+      email_signin_btn.classList.remove('btn_loader')
+      email_signin_btn.innerHTML="Sign In"
+      setAlertMsg(error.code)
     }
+
   }
 
-
+  // Signin With Google Button
   const signInWithGoogle = async (event) => {
 
     try {
       await signInWithPopup(auth, googleProvider)
-      
-      const user = auth?.currentUser?.email;
-      console.log(user)
+      const user = auth.currentUser;
       if (user) {
         navigate("/profile");
       }
       
     } catch (error) {
-      setAlertMsg(error)
-      console.log(alertMsg)
+      setAlertMsg(error.code)
     }
   }
 
+  // Forget password handler
+  const forgetPassword = (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value
 
-    
-      // console.log({
-      //   email: data.get('email'),
-      //   password: data.get('password'),
-      //   checkBox: document.getElementById('checkbox').checked, //true or false
-      // });
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+      setAlertMsg('Password reset email sent!')
+    })
+    .catch((error) => {
+      setAlertMsg(error.code)
+    });
+  }
 
 
   return (
@@ -110,11 +120,7 @@ export default function SignIn() {
             Sign in
           </Typography>
 
-          {/* {alertMsg ? (
-            <Alert variant="outlined" severity="error">
-              {alertMsg}
-            </Alert>
-          ): null} */}
+          {alertMsg ? alert : null}
             
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -141,17 +147,33 @@ export default function SignIn() {
               control={<Checkbox id='checkbox' color="primary" />}
               label="Remember me"
             />
+
+            {/* Email Signin */}
             <Button
+              id="email_signin_btn"
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 1, height:'36.5px' }}
             >
               Sign In
             </Button>
+
+            {/* Google Signin */}
+            <Button
+              onClick={()=>{signInWithGoogle()}}
+              type="button"
+              fullWidth
+              variant="outlined"
+              sx={{ mt: 1, mb: 2, height:'36.5px' }}
+            >
+              <GoogleIcon sx={{color: "gray", mr: 1}} />
+              Continue with Google
+            </Button>
+
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link onClick={(e)=>{forgetPassword(e)}} href="#" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
@@ -162,15 +184,9 @@ export default function SignIn() {
               </Grid>
             </Grid>
           </Box>
-          <Button
-              onClick={()=>{signInWithGoogle()}}
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In With Google
-            </Button>
+
+
+
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

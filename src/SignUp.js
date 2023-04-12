@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, { useState } from "react";
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+// MUI
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,8 +14,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// React Router
-import { Link as RouterLink } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
 // Firebase
 import { auth } from './config/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
@@ -35,6 +36,14 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+
+
+  const [alertMsg, setAlertMsg] = useState(null)
+  let alert = <Alert sx={{ mt: 2 }} variant="outlined" severity="error">{`${alertMsg}`}</Alert>
+
+  const navigate = useNavigate();
+
+  // SignUp Button handler
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -43,15 +52,23 @@ export default function SignUp() {
     const email = data.get('email')
     const password = data.get('password')
     const checkBox = document.getElementById('checkbox').checked //true or false
-    // await createUserWithEmailAndPassword(auth, email, password)
 
-    // console.log({
-    //   firstName: data.get('firstName'),
-    //   lastName: data.get('lastName'),
-    //   email: data.get('email'),
-    //   password: data.get('password'),
-    //   checkBox: document.getElementById('checkbox').checked, //true or false
-    // });
+    try {
+      var email_signin_btn = document.getElementById('email_signin_btn')
+      email_signin_btn.innerHTML=""
+      email_signin_btn.classList.add('btn_loader')
+
+      await createUserWithEmailAndPassword(auth, email, password)
+      const user = auth.currentUser;
+      if (user) {
+        navigate("/profile");
+      }
+      
+    } catch (error) {
+      email_signin_btn.classList.remove('btn_loader')
+      email_signin_btn.innerHTML="Sign Up"
+      setAlertMsg(error.code)
+    }
   };
 
   return (
@@ -72,6 +89,9 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+
+          {alertMsg ? alert : null}
+
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -124,16 +144,17 @@ export default function SignUp() {
               </Grid>
             </Grid>
             <Button
+              id='email_signin_btn'
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, height:'36.5px' }}
             >
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link component={RouterLink} to="/signin" variant="body2">
+                <Link component={RouterLink} to="/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
