@@ -9,8 +9,19 @@ import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc } from 'firebase
 
 export default function Profile() {
 
-  // Authentication
+  // LogOut
     const navigate = useNavigate();
+    const logout = async (event) => {
+      try {
+        await signOut(auth)
+        navigate("/");
+        
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    
+    // Authentication
     const [email, setEmail] = useState("")
     const [imgSrc, setImgSrc] = useState("") //When login with Google account Only
 
@@ -25,7 +36,6 @@ export default function Profile() {
           id: doc.id,
         }))
         setNoteList(filteredData)
-
       } catch (error) {
         console.log(error)
       }
@@ -45,8 +55,6 @@ export default function Profile() {
         await addDoc(noteCollection, {
           noteTitle: newNote,
           userId: auth?.currentUser?.uid,
-          // allow read, create, update, delete: if request.auth != null && request.auth.uid == request.resource.data.userId;
-
         })
         document.getElementById('new_Note_Input').value = ''
         getNoteList() //Refresh
@@ -65,6 +73,7 @@ export default function Profile() {
         console.log(error)
       }
     }
+
     // Update Note
     const [editedNoteTitle, setEditedNoteTitle] = useState("")
     const updateNoteTitle = async (id) => {
@@ -74,38 +83,41 @@ export default function Profile() {
           noteTitle: editedNoteTitle
         })
         getNoteList() //Refresh
-      } catch (error) {
+        document.getElementById('edit_input').value=""
+      } 
+      catch (error) {
         console.log(error)
       }
     }
 
-    // LogOut
-    const logout = async (event) => {
-        try {
-          await signOut(auth)
-          navigate("/");
 
-        } catch (error) {
-          console.log(error)
-        }
-      }
 
   return (
     <>
-        <h1>Profile</h1>
-        <h2>Hello: {email}</h2>
-        <img src={imgSrc} alt="" />
-        <button onClick={() => {logout()}}>LogOut</button>
+        <div className="profile_header">
+          <h1>Profile Page</h1>
+          <div className="profile_header">
+            <h2>{email}</h2>
+            <img src={imgSrc} alt="" />
+          </div>
+        </div>
+          <button onClick={() => {logout()}}>LogOut</button>
 
-        <input id="new_Note_Input" type="text" onChange={(e)=>{setNewNote(e.target.value)}} />
-        <button onClick={()=>{addNewNote()}}>Send</button>
+        <div className="profile_header" style={{justifyContent: 'center'}}>
+          <input id="new_Note_Input" type="text" onChange={(e)=>{setNewNote(e.target.value)}} />
+          <button onClick={()=>{addNewNote()}}>Add Note</button>
+        </div>
+
+        <h2>Note List:</h2>
+
 
         {noteList.map((note) => (
-          <div key={note.noteTitle} style={{backgroundColor: "gray"}}>
-            <h2>{note.noteTitle}</h2>
-            <button onClick={() => deleteNote(note.id)}> Delete </button>
-
-            <input onChange={(e)=>{setEditedNoteTitle(e.target.value)}} type="text" />
+          <div key={note.id} style={{backgroundColor: "gray"}}>
+            <h2>noteTitle: {note.noteTitle}</h2>
+            <p>userId: {note.userId}</p>
+            <p>noteId: {note.id}</p>
+            <input onChange={(e)=>{setEditedNoteTitle(e.target.value)}} id="edit_input" type="text" />
+            <button onClick={() => deleteNote(note.id)}> Delete</button>
             <button onClick={()=>{updateNoteTitle(note.id)}}>Edit</button>
           </div>
         ))}

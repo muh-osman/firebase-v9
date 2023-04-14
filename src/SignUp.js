@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // MUI
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -20,38 +16,24 @@ import { auth } from './config/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 const theme = createTheme();
 
 export default function SignUp() {
 
 
+  // Alert Message State
   const [alertMsg, setAlertMsg] = useState(null)
   let alert = <Alert sx={{ mt: 2 }} variant="outlined" severity="error">{`${alertMsg}`}</Alert>
 
+  // Navigate to profile after Sign Up
   const navigate = useNavigate();
 
-  // SignUp Button handler
+  // SignUp Button handler (from MUI)
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const firstName = data.get('firstName')
-    const lastName = data.get('lastName')
     const email = data.get('email')
     const password = data.get('password')
-    const checkBox = document.getElementById('checkbox').checked //true or false
 
     try {
       var email_signin_btn = document.getElementById('email_signin_btn')
@@ -77,44 +59,25 @@ export default function SignUp() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            justifyContent:'center',
+            height: '100vh'
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
+ 
+          <Typography component="h1" variant="h5" sx={{color:'#222', fontSize: '48px', fontWeight: 800}}>
             Sign up
           </Typography>
 
+            {/* Alert if Exist */}
           {alertMsg ? alert : null}
 
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
+
+                {/* Email Input */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -123,8 +86,10 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  autoFocus
                 />
               </Grid>
+                {/* Password input */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -136,32 +101,31 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox id='checkbox' value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
+
             </Grid>
+
+               {/* Sign Up Button */}
             <Button
               id='email_signin_btn'
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, height:'36.5px' }}
-            >
+              sx={{ mt: 3, mb: 2, height:'36.5px'}}>
               Sign Up
             </Button>
+
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link component={RouterLink} to="/" variant="body2">
+
+                  {/* Link to Signin */}
+                <Link component={RouterLink} to="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
+
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );

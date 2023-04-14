@@ -13,6 +13,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app)
+
+// Apple Auth
+
+// Microsoft Auth
+
+// Google Auth
 export const googleProvider = new GoogleAuthProvider()
+
 // FireStore
 export const db = getFirestore(app)

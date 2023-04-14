@@ -7,7 +7,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 @keyframes spinner {
   to {transform: rotate(360deg);}
 }
@@ -26,4 +25,125 @@ body {
   border: 1px solid #ccc;
   border-top-color: #07d;
   animation: spinner .6s linear infinite;
+}
+
+header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.get_started_btn {
+  padding: 16px 32px;
+  background-color: #f0f0f0;
+  border-radius: 36px;
+  color: #000;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.get_started_btn:hover {
+  background-color: rgba(192, 192, 192, 0.887);
+}
+
+main.main_home_page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 85px);
+}
+
+button {
+  cursor: pointer;
+}
+
+.get_started_container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.get_started_container h1 {
+  font-size: 44px;
+  font-weight: 800;
+}
+
+.get_started_container h2 {
+  font-weight: 600;
+  color: #222;
+}
+
+.get_started_container h2 a {
+  font-weight: 700;
+  color: #222;
+}
+
+.get_started_container h2 a:hover {
+  color: #000;
+}
+
+.continue_with_btn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.continue_with_btn button {
+  border: none;
+  width: 435px;
+  height: 73px;
+  border-radius: 66px;
+  font-weight: 700;
+  color: #000;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 0 48px;
+}
+
+.continue_with_btn button:nth-child(1) {
+  color: #fff;
+  background-color: #333;
+}
+
+.continue_with_btn button:nth-child(1):hover {
+  background-color: #000;
+}
+
+.continue_with_btn button:nth-child(2) {
+  color: #fff;
+  background-color: #00a1f1 ;
+}
+
+.continue_with_btn button:nth-child(2):hover {
+  background-color: #008dd4 ;
+}
+
+.continue_with_btn button:nth-child(3) {
+  color: #222;
+  background-color: #f6f8fc;
+  border: 1px solid #999;
+}
+
+.continue_with_btn button:nth-child(3):hover {
+  background-color: #eaf1fb;
+}
+
+.profile_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile_header img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-left: 10px;
 }
