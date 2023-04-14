@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // Firebase
-import { auth, db } from './config/firebase' //me
+import { auth, db, storage } from './config/firebase' //me
 import { signOut } from 'firebase/auth'
 import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import { ref, uploadBytes } from "firebase/storage";
 
 
 
@@ -90,6 +91,19 @@ export default function Profile() {
       }
     }
 
+    // Upload File
+    const [fileUpload, setFileUpload] = useState(null)
+    const uploadFile = async () => {
+      
+      if (!fileUpload) return; //end this function
+
+      const filesFolderRef = ref(storage, `files-folder/${fileUpload.name}`)
+      try {
+        await uploadBytes(filesFolderRef, fileUpload)
+      } catch (error) {
+        console.log(error)
+      }
+    };
 
 
   return (
@@ -103,9 +117,14 @@ export default function Profile() {
         </div>
           <button onClick={() => {logout()}}>LogOut</button>
 
-        <div className="profile_header" style={{justifyContent: 'center'}}>
+        <div className="profile_header" style={{justifyContent: 'center', marginBottom: '16px'}}>
           <input id="new_Note_Input" type="text" onChange={(e)=>{setNewNote(e.target.value)}} />
           <button onClick={()=>{addNewNote()}}>Add Note</button>
+        </div>
+
+        <div className="profile_header" style={{justifyContent: 'center'}}>
+          <input onChange={(e)=> {setFileUpload(e.target.files[0])}} type="file" />
+          <button onClick={()=> {uploadFile()}}>Upload File</button>
         </div>
 
         <h2>Note List:</h2>
