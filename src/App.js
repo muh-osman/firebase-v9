@@ -13,8 +13,8 @@ function App() {
     <Router>
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="getstarted" element={<GetStarted />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<GetStarted />} />
 
         <Route path="login" element={<LogIn />} />
         <Route path="signup" element={<SignUp />} />

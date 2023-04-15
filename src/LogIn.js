@@ -35,7 +35,7 @@ export default function LogIn() {
     const data = new FormData(event.currentTarget);
     const email = data.get('email')
     const password = data.get('password')
-    const checkBox = document.getElementById('checkbox').checked //true or false
+    // const checkBox = document.getElementById('checkbox').checked //true or false
 
     try {
       var email_signin_btn = document.getElementById('email_signin_btn')
