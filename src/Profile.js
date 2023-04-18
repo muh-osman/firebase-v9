@@ -84,7 +84,8 @@ export default function Profile() {
           noteTitle: editedNoteTitle
         })
         getNoteList() //Refresh
-        document.getElementById('edit_input').value=""
+        // document.getElementById('edit_input').value=""
+        
       } 
       catch (error) {
         console.log(error)
