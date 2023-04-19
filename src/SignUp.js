@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // MUI
 import Button from '@mui/material/Button';
@@ -28,17 +28,17 @@ export default function SignUp() {
   // Navigate to profile after Sign Up
   const navigate = useNavigate();
 
-  // SignUp Button handler (from MUI)
+  // SignUp Button handler 
+  const signUpBtn = useRef(null)
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email')
-    const password = data.get('password')
+    const data = new FormData(event.currentTarget) //from MUI
+    const email = data.get('email') //from MUI
+    const password = data.get('password') //from MUI
 
     try {
-      var email_signin_btn = document.getElementById('email_signin_btn')
-      email_signin_btn.innerHTML=""
-      email_signin_btn.classList.add('btn_loader')
+      signUpBtn.current.innerHTML = ""
+      signUpBtn.current.classList.add('btn_loader')
 
       await createUserWithEmailAndPassword(auth, email, password)
       const user = auth.currentUser;
@@ -47,8 +47,8 @@ export default function SignUp() {
       }
       
     } catch (error) {
-      email_signin_btn.classList.remove('btn_loader')
-      email_signin_btn.innerHTML="Sign Up"
+      signUpBtn.current.classList.remove('btn_loader')
+      signUpBtn.current.innerHTML = "Sign Up"
       setAlertMsg(error.code)
     }
   };
@@ -82,13 +82,13 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="email"
                   label="Email Address"
                   name="email"
                   autoComplete="email"
                   autoFocus
                 />
               </Grid>
+              
                 {/* Password input */}
               <Grid item xs={12}>
                 <TextField
@@ -97,7 +97,6 @@ export default function SignUp() {
                   name="password"
                   label="Password"
                   type="password"
-                  id="password"
                   autoComplete="new-password"
                 />
               </Grid>
@@ -106,7 +105,7 @@ export default function SignUp() {
 
                {/* Sign Up Button */}
             <Button
-              id='email_signin_btn'
+              ref={signUpBtn}
               type="submit"
               fullWidth
               variant="contained"

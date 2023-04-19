@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // MUI
 import Button from '@mui/material/Button';
@@ -15,7 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Alert from '@mui/material/Alert';
 // Firebase
 import { auth } from './config/firebase'
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 
 
 
@@ -27,9 +27,10 @@ export default function LogIn() {
   const [alertMsg, setAlertMsg] = useState(null)
   let alert = <Alert sx={{ mt: 2 }} variant="outlined" severity="error">{`${alertMsg}`}</Alert>
 
-  const navigate = useNavigate();
+  const navigate = useNavigate() //After Signin
 
   // Signin With Email Button
+  const signInBtn = useRef(null)
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -38,9 +39,8 @@ export default function LogIn() {
     // const checkBox = document.getElementById('checkbox').checked //true or false
 
     try {
-      var email_signin_btn = document.getElementById('email_signin_btn')
-      email_signin_btn.innerHTML=""
-      email_signin_btn.classList.add('btn_loader')
+      signInBtn.current.innerHTML = ""
+      signInBtn.current.classList.add('btn_loader')
 
       await signInWithEmailAndPassword(auth, email, password)
       const user = auth.currentUser;
@@ -49,27 +49,13 @@ export default function LogIn() {
       }
       
     } catch (error) {
-      email_signin_btn.classList.remove('btn_loader')
-      email_signin_btn.innerHTML="Sign In"
+      signInBtn.current.classList.remove('btn_loader')
+      signInBtn.current.innerHTML="Sign In"
       setAlertMsg(error.code)
     }
 
   }
 
-
-  // Forget password handler
-  const forgetPassword = (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value
-
-    sendPasswordResetEmail(auth, email)
-    .then(() => {
-      setAlertMsg('Password reset email sent!')
-    })
-    .catch((error) => {
-      setAlertMsg(error.code)
-    });
-  }
 
 
   return (
@@ -97,7 +83,6 @@ export default function LogIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
@@ -110,7 +95,6 @@ export default function LogIn() {
               name="password"
               label="Password"
               type="password"
-              id="password"
               autoComplete="current-password"
             />
             <FormControlLabel
@@ -120,7 +104,7 @@ export default function LogIn() {
 
             {/* Email Signin Button */}
             <Button
-              id="email_signin_btn"
+              ref={signInBtn}
               type="submit"
               fullWidth
               variant="contained"
@@ -131,7 +115,7 @@ export default function LogIn() {
 
             <Grid container>
               <Grid item xs>
-                <Link onClick={(e)=>{forgetPassword(e)}} href="#" variant="body2">
+                <Link component={RouterLink} to="/forget-password" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

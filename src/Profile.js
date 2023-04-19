@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 // Firebase
 import { auth, db, storage } from './config/firebase' //me
@@ -50,6 +50,7 @@ export default function Profile() {
     }, [])
 
     // Set data to FireStore
+    const newNoteInput = useRef(null)
     const [newNote, setNewNote] = useState("")
     const addNewNote = async () => {
       try {
@@ -57,7 +58,7 @@ export default function Profile() {
           noteTitle: newNote,
           userId: auth?.currentUser?.uid,
         })
-        document.getElementById('new_Note_Input').value = ''
+        newNoteInput.current.value=''
         getNoteList() //Refresh
       } catch (error) {
         console.log(error)
@@ -76,6 +77,7 @@ export default function Profile() {
     }
 
     // Update Note
+    const editInput = useRef(null)
     const [editedNoteTitle, setEditedNoteTitle] = useState("")
     const updateNoteTitle = async (id) => {
       const noteDoc = doc(db, 'Notes', id)
@@ -84,8 +86,7 @@ export default function Profile() {
           noteTitle: editedNoteTitle
         })
         getNoteList() //Refresh
-        // document.getElementById('edit_input').value=""
-        
+        editInput.current.value=''
       } 
       catch (error) {
         console.log(error)
@@ -119,7 +120,7 @@ export default function Profile() {
           <button onClick={() => {logout()}}>LogOut</button>
 
         <div className="profile_header" style={{justifyContent: 'center', marginBottom: '16px'}}>
-          <input id="new_Note_Input" type="text" onChange={(e)=>{setNewNote(e.target.value)}} />
+          <input ref={newNoteInput} type="text" onChange={(e)=>{setNewNote(e.target.value)}} />
           <button onClick={()=>{addNewNote()}}>Add Note</button>
         </div>
 
@@ -136,7 +137,7 @@ export default function Profile() {
             <h2>noteTitle: {note.noteTitle}</h2>
             <p>userId: {note.userId}</p>
             <p>noteId: {note.id}</p>
-            <input onChange={(e)=>{setEditedNoteTitle(e.target.value)}} id="edit_input" type="text" />
+            <input onChange={(e)=>{setEditedNoteTitle(e.target.value)}} ref={editInput} type="text" />
             <button onClick={() => deleteNote(note.id)}> Delete</button>
             <button onClick={()=>{updateNoteTitle(note.id)}}>Edit</button>
           </div>

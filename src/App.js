@@ -5,6 +5,7 @@ import Home from "./Home";
 import Profile from "./Profile";
 import LogIn from "./LogIn";
 import SignUp from "./SignUp";
+import ForgetPassword from "./ForgetPassword";
 import GetStarted from './GetStarted';
 
 
@@ -18,6 +19,7 @@ function App() {
 
         <Route path="login" element={<LogIn />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="forget-password" element={<ForgetPassword />} />
         <Route path="profile" element={<Profile />} />
       </Routes>
 
