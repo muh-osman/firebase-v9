@@ -1,13 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // MUI
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -28,23 +24,22 @@ export default function ForgetPassword() {
     const [alertMsg, setAlertMsg] = useState(null)
     let alert = <Alert sx={{ mt: 2 }} variant="outlined" severity="error">{`${alertMsg}`}</Alert>
 
+    const [disabled, setDisabled] = useState(false)
+
+
     // Forget password handler
-    const sendPasswordResetEmailBtn = useRef(null)
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget); //From MUI
         const email = data.get('email') //From MUI
 
         try {
-            sendPasswordResetEmailBtn.current.innerHTML = ""
-            sendPasswordResetEmailBtn.current.classList.add('btn_loader')
-            await sendPasswordResetEmail(auth, email)
-    
-            setAlertMsg('Password reset email sent!')
-
+          setDisabled(true)
+          await sendPasswordResetEmail(auth, email)
+          setAlertMsg('Password reset email sent!')
+          
         } catch(error) {
-            // sendPasswordResetEmailBtn.current.classList.remove('btn_loader')
-            sendPasswordResetEmailBtn.current.innerHTML="Send Reset Email"
+            setDisabled(false)
             setAlertMsg(error.code)
         }
     }
@@ -70,7 +65,7 @@ export default function ForgetPassword() {
 
         {alertMsg ? alert : null}
           
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: "100%" }}>
           <TextField
             margin="normal"
             required
@@ -81,12 +76,13 @@ export default function ForgetPassword() {
             autoFocus
           />
 
-          {/* Signin Button */}
+          {/* Reset Email Button */}
           <Button
-            ref={sendPasswordResetEmailBtn}
             type="submit"
             fullWidth
             variant="contained"
+            disabled={disabled}
+            disableRipple
             sx={{ mt: 3, mb: 1, height:'36.5px' }}
           >
             Send Reset Email

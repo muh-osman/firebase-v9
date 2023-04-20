@@ -109,6 +109,7 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="contained"
+              disableRipple
               sx={{ mt: 3, mb: 2, height:'36.5px'}}>
               Sign Up
             </Button>

@@ -108,6 +108,7 @@ export default function LogIn() {
               type="submit"
               fullWidth
               variant="contained"
+              disableRipple
               sx={{ mt: 3, mb: 1, height:'36.5px' }}
             >
               Sign In
